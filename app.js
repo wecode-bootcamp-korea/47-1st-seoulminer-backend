@@ -1,11 +1,9 @@
-// require("dotenv").config();
+require("dotenv").config();
 
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 const { DataSource } = require("typeorm");
-const dotenv = require("dotenv");
-dotenv.config();
 
 const app = express();
 
