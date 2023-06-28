@@ -1,42 +1,20 @@
 const { cartDao } = require('../models');
 
-const addProductToCart = async (userId, productId, productOptionId, quantity) => {
+const checkInventory = async(productId, productOptionId, quantity) => {
   const inventory = await cartDao.checkInventory(productId, productOptionId);
-  console.log(inventory)
-  console.log(quantity)
   if (quantity > inventory) {
     const error = new Error("QUANTITY_EXCEEDS_INVENTORY")
     error.statusCode = 409;
     throw error;
+  } else {
+    return true
   }
+}
 
-  const current_quantity = await cartDao.cartProductQuantity(userId, productId, productOptionId)    
-  console.log(current_quantity)
-  var new_quantity = 0;
-  if (current_quantity > 0) {
-    console.log(`input: ${quantity} , in db: ${current_quantity}`)
-    await cartDao.deleteCartItem(userId, productId, productOptionId)
-    new_quantity = current_quantity + quantity;
-    console.log(`update: ${new_quantity}`)
-  }
-  else {
-    new_quantity = quantity;
-  }
+const updateInventory = async(productId, productOptionId, quantity) => {
   try {
-    console.log(userId, productId, productOptionId, quantity);
-    await cartDao.addProduct(userId, productId, productOptionId, new_quantity);
-    console.log("hi")
-  } catch {
-    const error = new Error("FAILED_TO_ADD_PRODUCT")
-    error.statusCode = 500;
-    throw error;
-  }
-
-  try {
-    const updatedInventory = inventory - quantity
-    console.log(productId, productOptionId, updatedInventory);
-    await cartDao.updateInventory(productId, productOptionId, updatedInventory);
-
+    checkInventory(productId, productOptionId, quantity)
+    cartDao.updateInventory(productId, productOptionId, quantity);
   } catch {
     const error = new Error("FAILED_TO_UPDATE_INVENTORY")
     error.statusCode = 500;
@@ -44,6 +22,49 @@ const addProductToCart = async (userId, productId, productOptionId, quantity) =>
   }
 }
 
+//from 장바구니 page
+const updateProductQuantity = async(userId, productId, productOptionId, quantity) => {
+  checkInventory(productId, productOptionId, quantity);
+  try {
+    await cartDao.updateProductQuantity(userId, productId, productOptionId, quantity)
+  } catch {
+    const error = new Error("FAILED_TO_UPDATE_PRODUCT")
+    error.statusCode = 500;
+    throw error;
+  }
+}
+
+//from products page
+const addProductToCart = async (userId, productId, productOptionId, quantity) => {
+  const inventory = await cartDao.checkInventory(productId, productOptionId);
+  if (quantity > inventory) {
+    const error = new Error("QUANTITY_EXCEEDS_INVENTORY")
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const currentQuantity = await cartDao.cartProductQuantity(userId, productId, productOptionId)    
+  if (currentQuantity > 0) {
+    console.log(`input: ${quantity} , in db: ${currentQuantity}`)
+    await updateProductQuantity(userId, productId, productOptionId, quantity)
+  }
+  else {
+    try {
+      await cartDao.addProduct(userId, productId, productOptionId, newQuantity);
+    } catch {
+      const error = new Error("FAILED_TO_ADD_PRODUCT")
+      error.statusCode = 500;
+      throw error;
+    }
+  }
+  updateInventory(productId, productOptionId, quantity);
+}
+
+
+
 module.exports = {
-  addProductToCart
+  addProductToCart,
+  updateProductQuantity,
+  updateInventory,
+  checkInventory
 }

@@ -57,7 +57,7 @@ const updateInventory = async(productId, productOptionId, updatedInventory) => {
     await dataSource.query(
       `
       UPDATE product_options
-      SET inventory = ?
+      SET inventory = inventory - ?
       where id = ? and product_id = ?
       `,
       [updatedInventory, productOptionId, productId]
@@ -90,10 +90,29 @@ const addProduct = async(userId, productId, productOptionId, quantity) => {
   }
 }
 
+const updateProductQuantity = async(userId, productId, productOptionId, quantity) => {
+  try {
+    await dataSource.query(
+      `
+      UPDATE carts 
+      SET quantity = quantity + ?
+      where user_id = ? and product_id = ? and product_option_id = ?
+      `,
+      [quantity, userId, productId, productOptionId]
+    )
+  } catch (err) {
+    const error = new Error('INVALID_DATA_INPUT');
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
+
 module.exports = {
   addProduct,
   checkInventory,
   updateInventory,
   cartProductQuantity,
-  deleteCartItem
+  deleteCartItem,
+  updateProductQuantity
 }
