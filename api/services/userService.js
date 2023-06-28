@@ -11,9 +11,7 @@ const signIn = async (email, password) => {
     throw error;
   }
 
-  // uncomment when signup is done
-  // const isMatched = await bcrypt.compare(password, user.password);
-  const isMatched = (password == user.password)
+  const isMatched = await bcrypt.compare(password, user.password);
   
   if (!isMatched) {
     const error = new Error("PASSWORD_IS_NOT_VALID")
