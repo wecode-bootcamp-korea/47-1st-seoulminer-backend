@@ -4,7 +4,13 @@ const getUserByEmail = async(email) => {
   try {
     const [user] = await dataSource.query(
       `
-      SELECT * FROM users
+      SELECT 
+        id, 
+        email, 
+        password, 
+        name, 
+        phone_number as phoneNumber
+      FROM users
       where email = ?
       `,
       [email]

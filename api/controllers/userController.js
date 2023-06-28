@@ -2,6 +2,7 @@ const { userService } = require('../services')
 
 const signIn = async (req, res) => {
   const { email, password } = req.body;
+  
   if (!email || !password) {
     const error = new Error('KEY_ERROR')
     error.statusCode = 400;
