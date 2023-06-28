@@ -42,7 +42,6 @@ const updateProductQuantity = async(userId, productId, productOptionId, quantity
 const addProductToCart = async (userId, productId, productOptionId, quantity) => {
   var currentQuantity = await cartDao.cartProductQuantity(userId, productId, productOptionId)    
   if (currentQuantity > 0) {
-    console.log(`input: ${quantity} , in db: ${currentQuantity}`)
     await updateProductQuantity(userId, productId, productOptionId, quantity)
   }
   else {
@@ -55,7 +54,6 @@ const addProductToCart = async (userId, productId, productOptionId, quantity) =>
       throw error;
     }
   }
-  //updateInventory(productId, productOptionId, quantity);
 }
 
 
