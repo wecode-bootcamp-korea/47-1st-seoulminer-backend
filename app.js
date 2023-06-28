@@ -3,22 +3,15 @@ require("dotenv").config();
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
-const { DataSource } = require("typeorm");
+const router = require("./api/routes");
+const { appDataSource } = require("./api/models/dataSource");
 
 const app = express();
 
 app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
-
-const appDataSource = new DataSource({
-  type: process.env.DB_CONNECTION,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-});
+app.use(router);
 
 app.listen(3000, async () => {
   console.log("server listening on port 3000");
