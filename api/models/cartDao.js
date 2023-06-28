@@ -1,8 +1,39 @@
 const dataSource = require('./dataSource');
 
-// const isInCart = async(userId, productId, productOptionId) => {
-  // later for updating/deleting cart items
-// }
+const cartProductQuantity = async(userId, productId, productOptionId) => {
+  try {
+    const [result] = await dataSource.query(
+      `
+      SELECT SUM(quantity) as sum FROM carts 
+      where user_id = ? and product_id = ? and product_option_id = ?
+      `,
+      [userId, productId, productOptionId]
+    )
+    return parseInt(result.sum, 10)
+  } catch (err) {
+    const error = new Error('isincart error');
+    error.statusCode = 400;
+    throw error;
+  }
+
+}
+
+const deleteCartItem = async(userId, productId, productOptionId) => {
+  try {
+    await dataSource.query(
+      `
+      DELETE FROM carts
+      where user_id = ? and product_id = ? and product_option_id = ?
+      `,
+      [userId, productId, productOptionId]
+    )
+  } catch (err) {
+    const error = new Error('INVALID_DATA_INPUT');
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
 
 const checkInventory = async(productId, productOptionId) => {
   try {
@@ -48,8 +79,7 @@ const addProduct = async(userId, productId, productOptionId, quantity) => {
         product_id,
         product_option_id,
         quantity
-        ) 
-        VALUES ( ?, ?, ?, ?)
+        ) VALUES ( ?, ?, ?, ?)
       `,
       [userId, productId, productOptionId, quantity]
     )
@@ -63,5 +93,7 @@ const addProduct = async(userId, productId, productOptionId, quantity) => {
 module.exports = {
   addProduct,
   checkInventory,
-  updateInventory
+  updateInventory,
+  cartProductQuantity,
+  deleteCartItem
 }

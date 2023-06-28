@@ -10,7 +10,7 @@ const addProductToCart = async (req, res) => {
 
   try {
     await cartService.addProductToCart(userId, productId, productOptionId, quantity);
-    res.status(200).json({message: "product added to cart"});
+    res.status(200).json({message: "Product Added to Cart"});
   } catch (error) {
     res.status(error).json({message: "error"});
   }
