@@ -20,24 +20,30 @@ const createUser = async (email, hashedPassword, name, phoneNumber) => {
 };
 
 const userExistByEmail = async (email) => {
-  return await appDataSource.query(
+  const [userExistsByEmail] = await appDataSource.query(
     `
-    SELECT count(*) count
-    FROM users
-    WHERE email = ?
+    SELECT EXISTS (
+      SELECT *
+      FROM users
+      WHERE email = ?
+    ) exist
   `,
     [email]
   );
+  return userExistsByEmail;
 };
 
 const userExistByPhoneNumber = async (phoneNumber) => {
-  return await appDataSource.query(
+  const [userExistsByPhoneNumber] = await appDataSource.query(
     `
-    SELECT count(*) count
-    FROM users
-    WHERE phone_number = ?
+    SELECT EXISTS (
+      SELECT *
+      FROM users
+      WHERE phone_number = ?
+      ) exist
   `,
     [phoneNumber]
   );
+  return userExistsByPhoneNumber;
 };
 module.exports = { createUser, userExistByEmail, userExistByPhoneNumber };
