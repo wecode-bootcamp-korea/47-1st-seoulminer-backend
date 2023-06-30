@@ -13,7 +13,7 @@ const createCartItem = async (req, res) => {
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
     res.status(200).json({message: "Product Added to Cart"});
   } catch (error) {
-    res.status(error).json({message: "error"});
+    return res.status(error.statusCode).json({ message: error.message });
   }
 }
 
