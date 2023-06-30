@@ -10,5 +10,3 @@ const appDataSource = new DataSource({
 });
 
 module.exports = { appDataSource };
-//구조분해할당
-//

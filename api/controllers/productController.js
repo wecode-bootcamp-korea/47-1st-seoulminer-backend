@@ -1,17 +1,11 @@
 const { productService } = require("../services");
 
-const lookupAllProducts = async (req, res) => {
-  const allProductsPage = await productService.lookupAllProducts();
-  res.status(200).json({ data: allProductsPage });
-};
-
-const lookupProductByProductId = async (req, res) => {
-  const productId = req.params.productId;
-  const productPage = await productService.lookupProductByProductId(productId);
-  res.status(200).json({ data: productPage });
+const getAllProducts = async (req, res) => {
+  // const { limit, offset } = req.query;
+  const products = await productService.getAllProducts();
+  res.status(200).json({ data: products });
 };
 
 module.exports = {
-  lookupAllProducts,
-  lookupProductByProductId,
+  getAllProducts,
 };

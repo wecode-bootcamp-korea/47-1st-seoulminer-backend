@@ -1,16 +1,10 @@
 const { productDao } = require("../models");
 
-const lookupAllProducts = async () => {
-  const allProductsPage = await productDao.lookupAllProducts();
-  return { allProductsPage };
-};
-
-const lookupProductByProductId = async (productId) => {
-  const productPage = await productDao.lookupProductByProductId(productId);
-  return { productPage };
+const getAllProducts = async () => {
+  const products = await productDao.getAllProducts();
+  return { products };
 };
 
 module.exports = {
-  lookupAllProducts,
-  lookupProductByProductId,
+  getAllProducts,
 };
