@@ -9,6 +9,7 @@ const createCartItem = async (req, res) => {
       error.statusCode = 400;
       throw error;
     }
+    
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
     res.status(200).json({message: "Product Added to Cart"});
   } catch (error) {
