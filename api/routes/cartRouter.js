@@ -3,6 +3,7 @@ const { cartController } = require("../controllers");
 
 const router = express.Router();
 
-router.get("/:userId", cartController.cartLookUpByUserId);
+router.post("", cartController.createCartItem);
+router.get("/:userId", cartController.getCartList);
 
 module.exports = router;
