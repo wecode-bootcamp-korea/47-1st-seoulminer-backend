@@ -32,7 +32,7 @@ const signIn = async (req, res) => {
     const accessToken = await userService.signIn(email, password);
     res.status(200).json({ accessToken });
   } catch (error) {
-    res.status(error).json({ message: "error" });
+    return res.status(error.statusCode).json({ message: error.message });
   }
 };
 

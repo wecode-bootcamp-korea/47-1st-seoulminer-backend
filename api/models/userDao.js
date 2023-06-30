@@ -1,7 +1,7 @@
-const dataSource = require("./dataSource");
+const dataSource = require('./dataSource');
 
 const createUser = async (email, hashedPassword, name, phoneNumber) => {
-  return await appDataSource.query(
+  return await dataSource.query(
     `
       INSERT INTO users(
         email,
@@ -20,7 +20,7 @@ const createUser = async (email, hashedPassword, name, phoneNumber) => {
 };
 
 const userExistByEmail = async (email) => {
-  const [userExistsByEmail] = await appDataSource.query(
+  const [userExistsByEmail] = await dataSource.query(
     `
     SELECT EXISTS (
       SELECT *
@@ -34,7 +34,7 @@ const userExistByEmail = async (email) => {
 };
 
 const userExistByPhoneNumber = async (phoneNumber) => {
-  const [userExistsByPhoneNumber] = await appDataSource.query(
+  const [userExistsByPhoneNumber] = await dataSource.query(
     `
     SELECT EXISTS (
       SELECT *
@@ -70,4 +70,9 @@ const getUserByEmail = async (email) => {
   }
 };
 
-module.exports = { createUser, userExistByEmail, userExistByPhoneNumber, getUserByEmail };
+module.exports = {
+  createUser, 
+  userExistByEmail, 
+  userExistByPhoneNumber,
+  getUserByEmail
+}

@@ -1,18 +1,19 @@
 const { cartService } = require('../services')
 
-const addProductToCart = async (req, res) => {
-  const { userId, productId, productOptionId, quantity } = req.body;
-  if (!userId || !productId || !productOptionId || !quantity) {
-    const error = new Error('KEY_ERROR')
-    error.statusCode = 400;
-    throw error;
-  }
-
+const createCartItem = async (req, res) => {
   try {
-    await cartService.addProductToCart(userId, productId, productOptionId, quantity);
+    const { userId, productId, productOptionId, quantity } = req.body;
+
+    if (!userId || !productId || !productOptionId || !quantity) {
+      const error = new Error('KEY_ERROR')
+      error.statusCode = 400;
+      throw error;
+    }
+    
+    await cartService.createCartItem(userId, productId, productOptionId, quantity);
     res.status(200).json({message: "Product Added to Cart"});
   } catch (error) {
-    res.status(error).json({message: "error"});
+    return res.status(error.statusCode).json({ message: error.message });
   }
 }
 
@@ -28,11 +29,11 @@ const updateProductQuantity = async (req, res) => {
     await cartService.updateProductQuantity(userId, productId, productOptionId, quantity);
     res.status(200).json({message: "Product Quantity Updated"});
   } catch (error) {
-    res.status(error).json({message: "error"});
+    return res.status(error.statusCode).json({ message: error.message });
   }
 }
 
 module.exports = { 
-  addProductToCart,
+  createCartItem,
   updateProductQuantity
 }
