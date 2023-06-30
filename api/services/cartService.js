@@ -18,11 +18,16 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
         error.statusCode = 409;
         throw error; 
       }
+      if (storedCartItem.quantity + quantity < 0) {
+        const error = new Error("QUANTITY_CANNOT_BE_0")
+        error.statusCode = 409;
+        throw error; 
+      }
     }
 
     await cartDao.createCartItem(userId, productId, productOptionId, quantity);
   } catch {
-    const error = new Error("FAILED_TO_ADD_PRODUCT")
+    const error = new Error("FAILED_TO_UPDATE_CART")
     error.statusCode = 400;
     throw error;
   }

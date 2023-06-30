@@ -18,5 +18,5 @@ const createCartItem = async (req, res) => {
 }
 
 module.exports = { 
-  createCartItem 
+  createCartItem
 }
