@@ -1,23 +1,20 @@
 const { appDataSource } = require("./dataSource");
+const queryBuilder = require("./queryBuilder");
 
-const getAllProducts = async () => {
+const getProducts = async (category, sorting, limit, offset) => {
   // try {
   return await appDataSource.query(
     `SELECT
-      id,
-      name,
-      price,
-      category_id,
-      description,
-      thumbnail_image,
-      hover_image,
-      detail_information,
-      created_at,
-      updated_at
-    From products
-    LIMIT 3 OFFSET 0;
+      products.id AS product_id,
+      products.name AS product_name,
+      products.price AS product_price,
+      products.category_id AS product_category_id,
+      products.thumbnail_image AS product_thumbnail_image,
+      products.hover_image AS product_hover_image,
+      products.created_at AS product_created_at,
+      products.updated_at AS product_updated_at
+    FROM products
     `
-    // ,[limit, offset]
   );
   // } catch {
   //   const error = new Error("dataSource Error");
@@ -28,5 +25,5 @@ const getAllProducts = async () => {
 };
 
 module.exports = {
-  getAllProducts,
+  getProducts,
 };

@@ -1,11 +1,16 @@
 const { productService } = require("../services");
 
-const getAllProducts = async (req, res) => {
-  // const { limit, offset } = req.query;
-  const products = await productService.getAllProducts();
+const getProducts = async (req, res) => {
+  const { category, sorting, limit, offset } = req.query;
+  const products = await productService.getProducts(
+    category,
+    sorting,
+    limit,
+    offset
+  );
   res.status(200).json({ data: products });
 };
 
 module.exports = {
-  getAllProducts,
+  getProducts,
 };
