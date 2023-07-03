@@ -2,7 +2,8 @@ const { cartService } = require('../services')
 
 const createCartItem = async (req, res) => {
   try {
-    const { userId, productId, productOptionId, quantity } = req.body;
+    const userId = req.user.id;
+    const { productId, productOptionId, quantity } = req.body;
 
     if (!userId || !productId || !productOptionId || !quantity) {
       const error = new Error('KEY_ERROR')
@@ -19,7 +20,8 @@ const createCartItem = async (req, res) => {
 
 const updateCartItem = async (req, res) => {
   try {
-    const { userId, productId, productOptionId, quantity } = req.body;
+    const userId = req.user.id;
+    const { productId, productOptionId, quantity } = req.body;
 
     if (!userId || !productId || !productOptionId || !quantity) {
       const error = new Error('KEY_ERROR')

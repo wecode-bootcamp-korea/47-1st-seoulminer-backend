@@ -12,7 +12,7 @@ const loginRequired = async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await userDao.getUserById(decodedToken.id);
-
+    
     if (!user) {
       return res.status(404).json({ message: "USER_NOT_FOUND" });
     }

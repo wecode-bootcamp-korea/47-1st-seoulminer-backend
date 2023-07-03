@@ -1,7 +1,7 @@
-const dataSource = require('./dataSource');
+const { appDataSource } = require("./dataSource");
 
 const createUser = async (email, hashedPassword, name, phoneNumber) => {
-  return await dataSource.query(
+  return await appDataSource.query(
     `
       INSERT INTO users(
         email,
@@ -20,7 +20,7 @@ const createUser = async (email, hashedPassword, name, phoneNumber) => {
 };
 
 const userExistByEmail = async (email) => {
-  const [userExistsByEmail] = await dataSource.query(
+  const [userExistsByEmail] = await appDataSource.query(
     `
     SELECT EXISTS (
       SELECT *
@@ -34,7 +34,7 @@ const userExistByEmail = async (email) => {
 };
 
 const userExistByPhoneNumber = async (phoneNumber) => {
-  const [userExistsByPhoneNumber] = await dataSource.query(
+  const [userExistsByPhoneNumber] = await appDataSource.query(
     `
     SELECT EXISTS (
       SELECT *
@@ -49,7 +49,7 @@ const userExistByPhoneNumber = async (phoneNumber) => {
 
 const getUserByEmail = async (email) => {
   try {
-    const [user] = await dataSource.query(
+    const [user] = await appDataSource.query(
       `
       SELECT 
         id, 
@@ -70,9 +70,26 @@ const getUserByEmail = async (email) => {
   }
 };
 
+const getUserById = async (id) => {
+  return await appDataSource.query(
+    `
+    SELECT
+      id,
+      email,
+      password,
+      name,
+      phone_number phoneNumber
+    FROM users
+    WHERE id = ?
+  `,
+    [id]
+  );
+};
+
 module.exports = {
   createUser, 
   userExistByEmail, 
   userExistByPhoneNumber,
-  getUserByEmail
+  getUserByEmail,
+  getUserById
 }

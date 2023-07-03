@@ -3,7 +3,7 @@ const { cartDao } = require('../models');
 const createCartItem = async (userId, productId, productOptionId, quantity) => {
   try {
     const product = await cartDao.checkInventory(productId, productOptionId);
-
+    
     if (product.inventory === 0) {
       const error = new Error("PRODUCT_OUT_OF_STOCK")
       error.statusCode = 400;
