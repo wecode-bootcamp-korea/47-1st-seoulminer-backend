@@ -1,8 +1,8 @@
-const dataSource = require('./dataSource');
+const { appDataSource } = require("./dataSource");
 
-const checkInventory = async(productId, productOptionId) => {
+const checkInventory = async (productId, productOptionId) => {
   try {
-    const [product] = await dataSource.query(
+    const [product] = await appDataSource.query(
       `
       SELECT 
         product_id as productId,
@@ -12,18 +12,18 @@ const checkInventory = async(productId, productOptionId) => {
       where id = ? and product_id = ?
       `,
       [productOptionId, productId]
-    )
+    );
     return product;
   } catch (err) {
-    const error = new Error('INVALID_DATA_INPUT');
+    const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
   }
-}
+};
 
-const createCartItem = async(userId, productId, productOptionId, quantity) => {
+const createCartItem = async (userId, productId, productOptionId, quantity) => {
   try {
-    await dataSource.query(
+    await appDataSource.query(
       `
       INSERT INTO carts (
         user_id,
@@ -34,17 +34,17 @@ const createCartItem = async(userId, productId, productOptionId, quantity) => {
         ON DUPLICATE KEY UPDATE quantity = quantity + ?
       `,
       [userId, productId, productOptionId, quantity, quantity]
-    )
+    );
   } catch (err) {
-    const error = new Error('INVALID_DATA_INPUT');
+    const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
   }
-}
+};
 
 const getCartItem = async (userId, productId, productOptionId) => {
   try {
-    const [item] = await dataSource.query(
+    const [item] = await appDataSource.query(
       `
       SELECT 
         user_id as userId, 
@@ -58,19 +58,17 @@ const getCartItem = async (userId, productId, productOptionId) => {
         product_option_id = ?
       `,
       [userId, productId, productOptionId]
-    )
+    );
     return item;
   } catch (err) {
-    const error = new Error('INVALID_DATA_INPUT');
+    const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
   }
-}
-
-
+};
 
 module.exports = {
   createCartItem,
   getCartItem,
-  checkInventory
-}
+  checkInventory,
+};
