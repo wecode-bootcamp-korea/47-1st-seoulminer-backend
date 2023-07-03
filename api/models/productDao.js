@@ -5,24 +5,24 @@ const getProductByProductId = async (productId) => {
     return await appDataSource.query(
       `
     SELECT
-      products.id AS product_id,
-      products.name AS product_name,
-      products.price AS product_price,
-      products.category_id AS product_category_id,
-      products.description AS product_description,
-      products.thumbnail_image AS product_thumbnail_image,
-      products.hover_image AS product_hover_image,
-      products.detail_information AS product_detail_information,
-      products.created_at AS product_created_at,
-      products.updated_at AS product_updated_at,
+      products.id AS productId,
+      products.name AS productName,
+      products.price AS productPrice,
+      products.category_id AS productCategoryId,
+      products.description AS productDescription,
+      products.thumbnail_image AS productThumbnailImage,
+      products.hover_image AS productHoverImage,
+      products.detail_information AS productDetailInformation,
+      products.created_at AS productCreatedAt,
+      products.updated_at AS productUpdatedAt,
     JSON_ARRAYAGG(
       JSON_OBJECT(
-        'option_id', product_options.id,
-        'option_name', product_options.name,
-        'option_description', product_options.description,
-        'option_inventory', product_options.inventory
+        'optionId', product_options.id,
+        'optionName', product_options.name,
+        'optionDescription', product_options.description,
+        'optionInventory', product_options.inventory
        )
-      ) AS product_options
+      ) AS productOptions
       FROM products
       INNER JOIN product_options ON products.id = product_options.product_id
       WHERE products.id = ?
