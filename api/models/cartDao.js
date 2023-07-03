@@ -65,7 +65,9 @@ const getCartItem = async (userId, productId, productOptionId) => {
     error.statusCode = 400;
     throw error;
   }
-};const deleteCart = async (userId) => {
+};
+
+const deleteCart = async (userId) => {
   try {
     await appDataSource.query(
       `
