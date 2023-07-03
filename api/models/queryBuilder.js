@@ -1,27 +1,31 @@
-// const category = async (category) => {
-//   const categoryArr = [];
-//   for (let i = 0; )
-//   categoryArr.push();
-// };
+const filterBuilder = (categoryIds) => {
+  let filterQuery = "";
+  if (categoryIds[0] === "all") {
+    filterQuery = "";
+  } else {
+    filterQuery = `WHERE products.category_id IN (${categoryIds.join(",")})`;
+  }
+  return filterQuery;
+};
 
-const sorting = async (sorting = `ORDER BY created_at ASC`) => {
+const sortingBuilder = (sorting) => {
   if (sorting === "priceDESC") {
-    return await `ORDER BY products_price DESC`;
+    return `ORDER BY price DESC`;
   } else if (sorting === "priceASC") {
-    return await `ORDER BY products_price ASC`;
+    return `ORDER BY price ASC`;
   } else if (sorting === "new") {
-    return await `ORDER BY created_at DESC`;
-  } else if (sorting === "old") {
-    return await `ORDER BY created_at ASC`;
+    return `ORDER BY created_at DESC`;
+  } else {
+    return `ORDER BY created_at ASC`;
   }
 };
 
-const pagination = async (limit = 10, offset = 0) => {
-  return await `LIMIT ${limit} OFFSET ${offset}`;
+const paginationBuilder = (parsedLimit, parsedOffset) => {
+  return `LIMIT ${parsedLimit} OFFSET ${parsedOffset}`;
 };
 
 module.exports = {
-  category,
-  sorting,
-  pagination,
+  filterBuilder,
+  sortingBuilder,
+  paginationBuilder,
 };

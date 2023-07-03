@@ -1,32 +1,44 @@
 const { appDataSource } = require("./dataSource");
 const queryBuilder = require("./queryBuilder");
 
-const getProducts = async (category, sorting, limit, offset) => {
+const getProductList = async (
+  categoryIds,
+  sorting,
+  parsedLimit,
+  parsedOffset
+) => {
   try {
-    const pagination = queryBuilder.pagination(limit, offset);
-    return await appDataSource.query(
-      `SELECT
-      products.id AS product_id,
-      products.name AS product_name,
-      products.price AS product_price,
-      products.category_id AS product_category_id,
-      products.thumbnail_image AS product_thumbnail_image,
-      products.hover_image AS product_hover_image,
-      products.created_at AS product_created_at,
-      products.updated_at AS product_updated_at
-    FROM products
-
-  
-    `
+    const filterQuery = queryBuilder.filterBuilder(categoryIds);
+    const orderQuery = queryBuilder.sortingBuilder(sorting);
+    const paginationQuery = queryBuilder.paginationBuilder(
+      parsedLimit,
+      parsedOffset
     );
+    const productList = await appDataSource.query(
+      `
+      SELECT
+        products.id AS productId,
+        products.name AS productName,
+        products.price AS productPrice,
+        products.category_id AS productCategoryId,
+        products.thumbnail_image AS productThumbnailImage,
+        products.hover_image AS productHoverImage,
+        products.created_at AS productCreatedAt,
+        products.updated_at AS productUpdatedAt
+      FROM products
+      ${filterQuery}
+      ${orderQuery}
+      ${paginationQuery}
+      `
+    );
+    return productList;
   } catch {
     const error = new Error("dataSource Error");
     error.statusCode = 400;
-
     throw error;
   }
 };
 
 module.exports = {
-  getProducts,
+  getProductList,
 };

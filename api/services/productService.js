@@ -1,15 +1,25 @@
 const { productDao } = require("../models");
 
-const getProducts = async (category, sorting, limit, offset) => {
-  const products = await productDao.getProducts(
-    category,
+const getProductList = async (
+  categoryIds,
+  sorting,
+  parsedLimit,
+  parsedOffset
+) => {
+  const productList = await productDao.getProductList(
+    categoryIds,
     sorting,
-    limit,
-    offset
+    parsedLimit,
+    parsedOffset
   );
-  return { products };
+  if (!productList[0]) {
+    const error = new Error("NO_SUCH_CONDITION");
+    error.statusCode = 404;
+    throw error;
+  }
+  return productList;
 };
 
 module.exports = {
-  getProducts,
+  getProductList,
 };
