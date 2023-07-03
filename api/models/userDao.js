@@ -85,6 +85,7 @@ const getUserById = async (id) => {
     [id]
   );
 };
+
 module.exports = {
   createUser,
   userExistByEmail,
