@@ -4,7 +4,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
   try {
     const product = await cartDao.checkInventory(productId, productOptionId);
 
-    if (product.inventory == 0) {
+    if (product.inventory === 0) {
       const error = new Error("PRODUCT_OUT_OF_STOCK")
       error.statusCode = 400;
       throw error;
@@ -18,6 +18,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
         error.statusCode = 409;
         throw error; 
       }
+
       if (storedCartItem.quantity + quantity < 0) {
         const error = new Error("QUANTITY_CANNOT_BE_0")
         error.statusCode = 409;
@@ -37,7 +38,7 @@ const updateCartItem = async (userId, productId, productOptionId, quantity) => {
   try {
     const product = await cartDao.checkInventory(productId, productOptionId);
 
-    if (product.inventory == 0) {
+    if (product.inventory === 0) {
       const error = new Error("PRODUCT_OUT_OF_STOCK")
       error.statusCode = 400;
       throw error;
@@ -50,6 +51,7 @@ const updateCartItem = async (userId, productId, productOptionId, quantity) => {
       error.statusCode = 409;
       throw error; 
     }
+    
     if (storedCartItem.quantity + quantity < 0) {
       const error = new Error("QUANTITY_CANNOT_BE_0")
       error.statusCode = 409;
