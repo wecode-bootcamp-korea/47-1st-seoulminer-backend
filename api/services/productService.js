@@ -6,18 +6,23 @@ const getProductList = async (
   parsedLimit,
   parsedOffset
 ) => {
-  const productList = await productDao.getProductList(
-    categoryIds,
-    sorting,
-    parsedLimit,
-    parsedOffset
-  );
-  if (!productList[0]) {
+  try {
+    const productList = await productDao.getProductList(
+      categoryIds,
+      sorting,
+      parsedLimit,
+      parsedOffset
+    );
+    if (productList.length > 0) {
+      return productList;
+    } else {
+      throw error;
+    }
+  } catch {
     const error = new Error("NO_SUCH_CONDITION");
     error.statusCode = 404;
     throw error;
   }
-  return productList;
 };
 
 module.exports = {

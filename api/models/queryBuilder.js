@@ -9,14 +9,15 @@ const filterBuilder = (categoryIds) => {
 };
 
 const sortingBuilder = (sorting) => {
-  if (sorting === "priceDESC") {
-    return `ORDER BY price DESC`;
-  } else if (sorting === "priceASC") {
-    return `ORDER BY price ASC`;
-  } else if (sorting === "new") {
-    return `ORDER BY created_at DESC`;
-  } else {
-    return `ORDER BY created_at ASC`;
+  switch (sorting) {
+    case "priceDESC":
+      return `ORDER BY price DESC`;
+    case "priceASC":
+      return `ORDER BY price ASC`;
+    case "new":
+      return `ORDER BY created_at DESC`;
+    case "old":
+      return `ORDER BY created_at ASC`;
   }
 };
 

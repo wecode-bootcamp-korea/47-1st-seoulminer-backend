@@ -10,6 +10,7 @@ const getProductList = async (req, res) => {
     } = req.query;
 
     const categoryIds = Array.isArray(category) ? category : [category];
+
     const parsedLimit = parseInt(limit, 10);
     const parsedOffset = parseInt(offset, 10);
 
@@ -24,6 +25,7 @@ const getProductList = async (req, res) => {
     res.status(error.statusCode).json({ message: error.message });
   }
 };
+
 module.exports = {
   getProductList,
 };
