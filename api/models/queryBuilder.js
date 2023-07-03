@@ -1,7 +1,8 @@
-const category = async (category) => {
-  const categoryArr = [];
-  categoryArr.push();
-};
+// const category = async (category) => {
+//   const categoryArr = [];
+//   for (let i = 0; )
+//   categoryArr.push();
+// };
 
 const sorting = async (sorting = `ORDER BY created_at ASC`) => {
   if (sorting === "priceDESC") {
@@ -15,17 +16,12 @@ const sorting = async (sorting = `ORDER BY created_at ASC`) => {
   }
 };
 
-async function limit(limit = 10) {
-  return await `LIMIT ${limit}`;
-}
-
-async function offset(offset = 0) {
-  return await `OFFSET ${offset}`;
-}
+const pagination = async (limit = 10, offset = 0) => {
+  return await `LIMIT ${limit} OFFSET ${offset}`;
+};
 
 module.exports = {
   category,
   sorting,
-  limit,
-  offset,
+  pagination,
 };

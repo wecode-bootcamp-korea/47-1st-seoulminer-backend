@@ -2,9 +2,10 @@ const { appDataSource } = require("./dataSource");
 const queryBuilder = require("./queryBuilder");
 
 const getProducts = async (category, sorting, limit, offset) => {
-  // try {
-  return await appDataSource.query(
-    `SELECT
+  try {
+    const pagination = queryBuilder.pagination(limit, offset);
+    return await appDataSource.query(
+      `SELECT
       products.id AS product_id,
       products.name AS product_name,
       products.price AS product_price,
@@ -14,14 +15,16 @@ const getProducts = async (category, sorting, limit, offset) => {
       products.created_at AS product_created_at,
       products.updated_at AS product_updated_at
     FROM products
-    `
-  );
-  // } catch {
-  //   const error = new Error("dataSource Error");
-  //   error.statusCode = 400;
 
-  //   throw error;
-  // }
+  
+    `
+    );
+  } catch {
+    const error = new Error("dataSource Error");
+    error.statusCode = 400;
+
+    throw error;
+  }
 };
 
 module.exports = {
