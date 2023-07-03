@@ -87,8 +87,8 @@ const getUserById = async (id) => {
 };
 
 module.exports = {
-  createUser, 
-  userExistByEmail, 
+  createUser,
+  userExistByEmail,
   userExistByPhoneNumber,
   getUserByEmail,
   getUserById
