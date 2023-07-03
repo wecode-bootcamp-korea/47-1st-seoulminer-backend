@@ -2,7 +2,7 @@ const appDataSource = require("./dataSource");
 
 const getProductByProductId = async (productId) => {
   try {
-    return await appDataSource.query(
+    const [product] = await appDataSource.query(
       `
     SELECT
       products.id AS productId,
@@ -30,6 +30,7 @@ const getProductByProductId = async (productId) => {
     `,
       [productId]
     );
+    return product;
   } catch {
     const error = new Error("dataSource Error");
     error.statusCode = 400;

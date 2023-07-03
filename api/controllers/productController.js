@@ -1,9 +1,8 @@
 const { productService } = require("../services");
 
 const getProductByProductId = async (req, res) => {
-  const productId = req.params.productId;
-
   try {
+    const productId = req.params.productId;
     const product = await productService.getProductByProductId(productId);
     res.status(200).json({ data: product });
   } catch (error) {
