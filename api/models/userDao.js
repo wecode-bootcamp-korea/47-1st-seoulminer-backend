@@ -1,6 +1,53 @@
 const dataSource = require('./dataSource');
 
-const getUserByEmail = async(email) => {
+const createUser = async (email, hashedPassword, name, phoneNumber) => {
+  return await dataSource.query(
+    `
+      INSERT INTO users(
+        email,
+        password,
+        name,
+        phone_number
+      ) VALUES (
+        ?,
+        ?,
+        ?,
+        ?
+      );
+      `,
+    [email, hashedPassword, name, phoneNumber]
+  );
+};
+
+const userExistByEmail = async (email) => {
+  const [userExistsByEmail] = await dataSource.query(
+    `
+    SELECT EXISTS (
+      SELECT *
+      FROM users
+      WHERE email = ?
+    ) exist
+  `,
+    [email]
+  );
+  return userExistsByEmail;
+};
+
+const userExistByPhoneNumber = async (phoneNumber) => {
+  const [userExistsByPhoneNumber] = await dataSource.query(
+    `
+    SELECT EXISTS (
+      SELECT *
+      FROM users
+      WHERE phone_number = ?
+      ) exist
+  `,
+    [phoneNumber]
+  );
+  return userExistsByPhoneNumber;
+};
+
+const getUserByEmail = async (email) => {
   try {
     const [user] = await dataSource.query(
       `
@@ -14,15 +61,18 @@ const getUserByEmail = async(email) => {
       where email = ?
       `,
       [email]
-    )
+    );
     return user;
   } catch (err) {
-    const error = new Error('INVALID_DATA_INPUT');
+    const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
   }
-}
+};
 
 module.exports = {
+  createUser, 
+  userExistByEmail, 
+  userExistByPhoneNumber,
   getUserByEmail
 }
