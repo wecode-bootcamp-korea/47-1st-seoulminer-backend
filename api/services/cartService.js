@@ -28,6 +28,17 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
   }
 }
 
+const deleteCart = async (userId) => {
+  try {
+    await cartDao.deleteCart(userId)
+  } catch {
+    const error = new Error("FAILED_TO_DELETE_CART")
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
 module.exports = {
-  createCartItem
+  createCartItem,
+  deleteCart
 }
