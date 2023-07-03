@@ -70,9 +70,25 @@ const getUserByEmail = async (email) => {
   }
 };
 
+const getUserById = async (id) => {
+  return await appDataSource.query(
+    `
+    SELECT
+      id,
+      email,
+      password,
+      name,
+      phone_number phoneNumber
+    FROM users
+    WHERE id = ?
+  `,
+    [id]
+  );
+};
 module.exports = {
   createUser,
   userExistByEmail,
   userExistByPhoneNumber,
   getUserByEmail,
+  getUserById,
 };
