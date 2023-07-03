@@ -21,6 +21,16 @@ const getProductList = async (req, res) => {
       parsedOffset
     );
     res.status(200).json({ data: productList });
+      } catch (error) {
+    res.status(error.statusCode).json({ message: error.message });
+  }
+};
+
+const getProductByProductId = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const product = await productService.getProductByProductId(productId);
+    res.status(200).json({ data: product });
   } catch (error) {
     res.status(error.statusCode).json({ message: error.message });
   }
@@ -28,4 +38,5 @@ const getProductList = async (req, res) => {
 
 module.exports = {
   getProductList,
+  getProductByProductId,
 };

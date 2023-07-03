@@ -1,7 +1,11 @@
-const appDataSource = require("./dataSource");
+const dataSource = require("./dataSource");
+const userDao = require("./userDao.js");
 const productDao = require("./productDao");
+const cartDao = require("./cartDao.js");
 
 module.exports = {
-  appDataSource,
+  dataSource,
+  userDao,
   productDao,
+  cartDao,
 };
