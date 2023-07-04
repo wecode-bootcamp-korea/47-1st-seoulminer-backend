@@ -67,22 +67,6 @@ const getCartItem = async (userId, productId, productOptionId) => {
   }
 };
 
-const deleteCart = async (userId) => {
-  try {
-    await appDataSource.query(
-      `
-      DELETE from carts
-        where user_id = ?
-      `,
-      [userId]
-    )
-  } catch (err) {
-    const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 400;
-    throw error;
-  }
-}
-
 const getCartList = async (userId) => {
   return await appDataSource.query(
     `
@@ -101,10 +85,26 @@ const getCartList = async (userId) => {
   );
 };
 
+const deleteAllCart = async (userId) => {
+  try {
+    await appDataSource.query(
+      `
+      DELETE from carts
+        where user_id = ?
+      `,
+      [userId]
+    )
+  } catch (err) {
+    const error = new Error('INVALID_DATA_INPUT');
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
 module.exports = {
   createCartItem,
   getCartItem,
   checkInventory,
-  deleteCart,
+  deleteAllCart,
   getCartList
-};
+}
