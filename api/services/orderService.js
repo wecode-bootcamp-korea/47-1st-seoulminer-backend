@@ -1,3 +1,7 @@
 const orderDao = require("../models");
 
-module.exports = {};
+const createUserOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity) => {
+  return await orderDao.createUserOrderByItem(userId, orderNumber, productId, productOptionId, quantity);
+};
+
+module.exports = { createUserOrderByItem };
