@@ -1,22 +1,7 @@
 const { appDataSource } = require("./dataSource");
 
-const createOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity) => {
-  const getProductInfoByProductId = await appDataSource.query(
-    `
-      SELECT
-        p.name name,
-        po.name optionName,
-        p.price price
-      FROM products p
-      JOIN product_options po ON po.id = ?
-      WHERE p.id = ?
-  `,
-    [productOptionId, productId]
-  );
-
-  const orderItem = getProductInfoByProductId[0];
-
-  const createOrder = await appDataSource.query(
+const createOrder = async (userId, orderNumber, totalPrice) => {
+  await appDataSource.query(
     `
     INSERT INTO orders(
       user_id,
@@ -30,21 +15,25 @@ const createOrderByItem = async (userId, orderNumber, productId, productOptionId
       1
     )
   `,
-    [userId, orderNumber, orderItem.price]
+    [userId, orderNumber, totalPrice]
   );
 
   const getOrderId = await appDataSource.query(
     `
     SELECT id
     FROM orders
-    WHERE user_id = ?
+    WHERE order_number = ?
   `,
-    [userId]
+    [orderNumber]
   );
 
   const orderId = getOrderId[0].id;
 
-  const createOrderItem = await appDataSource.query(
+  return orderId;
+};
+
+const createOrderItem = async (orderId, productId, productOptionId, quantity) => {
+  await appDataSource.query(
     `
     INSERT INTO order_items(
       order_id,
@@ -62,4 +51,40 @@ const createOrderByItem = async (userId, orderNumber, productId, productOptionId
   );
 };
 
-module.exports = { createOrderByItem };
+const createOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity) => {
+  const [getProductInfoByProductId] = await appDataSource.query(
+    `
+      SELECT price
+      FROM products
+      WHERE id = ?
+  `,
+    [productId]
+  );
+
+  const itemPrice = getProductInfoByProductId.price;
+  const orderId = await createOrder(userId, orderNumber, itemPrice);
+
+  await createOrderItem(orderId, productId, productOptionId, quantity);
+};
+
+const createOrderByCart = async (userId, orderNumber, totalPrice) => {
+  const getCartByUserId = await appDataSource.query(
+    `
+    SELECT 
+      product_id,
+      product_option_id,
+      quantity
+    FROM carts
+    WHERE user_id = ?
+  `,
+    [userId]
+  );
+
+  const orderId = await createOrder(userId, orderNumber, totalPrice);
+
+  for (const item of getCartByUserId) {
+    await createOrderItem(orderId, item.product_id, item.product_option_id, item.quantity);
+  }
+};
+
+module.exports = { createOrderByItem, createOrderByCart };
