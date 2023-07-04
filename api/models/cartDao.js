@@ -1,5 +1,16 @@
 const { appDataSource } = require("./dataSource");
 
+const cartProductDeleteByCartId = async (cartId) => {
+  return await appDataSource.query(
+    `
+    DELETE
+    FROM carts
+    WHERE id = ?;
+  `,
+    [cartId]
+  );
+};
+
 const checkInventory = async (productId, productOptionId) => {
   try {
     const [product] = await appDataSource.query(
@@ -85,4 +96,4 @@ const getCartList = async (userId) => {
   );
 };
 
-module.exports = { checkInventory, createCartItem, getCartItem, getCartList };
+module.exports = { cartProductDeleteByCartId, checkInventory, createCartItem, getCartItem, getCartList };

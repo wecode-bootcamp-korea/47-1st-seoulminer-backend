@@ -4,6 +4,6 @@ const { loginRequired } = require("../utils/auth");
 
 const router = express.Router();
 
-router.post("/:productId", loginRequired, orderController.itemToOrder);
+router.post("", loginRequired, orderController.createUserOrderByItem);
 
 module.exports = router;
