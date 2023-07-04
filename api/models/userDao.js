@@ -91,5 +91,5 @@ module.exports = {
   userExistByEmail,
   userExistByPhoneNumber,
   getUserByEmail,
-  getUserById
-}
+  getUserById,
+};

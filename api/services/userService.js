@@ -68,7 +68,4 @@ const signIn = async (email, password) => {
   return token;
 };
 
-module.exports = {
-  signUp,
-  signIn,
-};
+module.exports = { signUp, signIn };
