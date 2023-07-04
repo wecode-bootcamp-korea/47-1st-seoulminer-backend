@@ -61,9 +61,27 @@ const cartProductDeleteByCartId = async (req, res) => {
   }
 };
 
-module.exports = {
+const deleteAllCart = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    if (!userId) {
+      const error = new Error('KEY_ERROR')
+      error.statusCode = 400;
+      throw error;
+    }
+    
+    await cartService.deleteAllCart(userId);
+    res.status(200).json({message: "Cart Deleted"});
+  } catch (error) {
+    return res.status(error.statusCode).json({ message: error.message });
+  }
+};
+
+module.exports = { 
   createCartItem,
   getCartList,
   updateCartItem,
   cartProductDeleteByCartId,
-};
+  deleteAllCart
+}

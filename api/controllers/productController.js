@@ -3,7 +3,7 @@ const { productService } = require("../services");
 const getProductList = async (req, res) => {
   try {
     const { category = "all", sorting = "old", limit = 10, offset = 0 } = req.query;
-
+    
     const categoryIds = Array.isArray(category) ? category : [category];
 
     const parsedLimit = parseInt(limit, 10);

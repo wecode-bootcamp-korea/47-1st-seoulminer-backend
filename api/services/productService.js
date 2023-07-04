@@ -23,7 +23,7 @@ const getProductByProductId = async (productId) => {
     error.statusCode = 404;
     throw error;
   }
-
+  
   return product;
 };
 

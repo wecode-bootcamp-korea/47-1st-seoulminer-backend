@@ -74,9 +74,20 @@ const updateCartItem = async (userId, productId, productOptionId, quantity) => {
   }
 };
 
+const deleteAllCart = async (userId) => {
+  try {
+    await cartDao.deleteAllCart(userId)
+  } catch {
+    const error = new Error("FAILED_TO_DELETE_CART")
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 module.exports = {
   createCartItem,
+  deleteAllCart,
   cartProductDeleteByCartId,
   getCartList,
-  updateCartItem,
+  updateCartItem
 };

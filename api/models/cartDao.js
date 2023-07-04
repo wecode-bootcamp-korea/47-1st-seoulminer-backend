@@ -96,4 +96,26 @@ const getCartList = async (userId) => {
   );
 };
 
-module.exports = { checkInventory, createCartItem, getCartItem, getCartList };
+const deleteAllCart = async (userId) => {
+  try {
+    await appDataSource.query(
+      `
+      DELETE from carts
+        where user_id = ?
+      `,
+      [userId]
+    )
+  } catch (err) {
+    const error = new Error('INVALID_DATA_INPUT');
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
+module.exports = {
+  createCartItem,
+  getCartItem,
+  checkInventory,
+  deleteAllCart,
+  getCartList
+}
