@@ -4,6 +4,6 @@ const { loginRequired } = require("../utils/auth");
 
 const router = express.Router();
 
-router.get("", loginRequired, orderController.getOrderItems);
+router.get("/:orderNumber", loginRequired, orderController.getOrderItems);
 
 module.exports = router;
