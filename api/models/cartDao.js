@@ -25,7 +25,7 @@ const checkInventory = async (productId, productOptionId) => {
       [productOptionId, productId]
     );
     return product;
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -46,7 +46,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
       `,
       [userId, productId, productOptionId, quantity, quantity]
     );
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -58,6 +58,7 @@ const getCartItem = async (userId, productId, productOptionId) => {
     const [item] = await appDataSource.query(
       `
       SELECT 
+        carts.id AS cartId,
         user_id as userId, 
         product_id as productId, 
         product_option_id as productOptionId, 
@@ -71,7 +72,7 @@ const getCartItem = async (userId, productId, productOptionId) => {
       [userId, productId, productOptionId]
     );
     return item;
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -105,7 +106,7 @@ const deleteAllCart = async (userId) => {
       `,
       [userId]
     )
-  } catch (err) {
+  } catch {
     const error = new Error('INVALID_DATA_INPUT');
     error.statusCode = 400;
     throw error;
@@ -117,5 +118,6 @@ module.exports = {
   getCartItem,
   checkInventory,
   deleteAllCart,
+  cartProductDeleteByCartId,
   getCartList
 }
