@@ -18,4 +18,21 @@ const getOrderItems = async(req, res) => {
   }
 }
 
-module.exports = { getOrderItems };
+const getAllOrders = async(req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!userId) {
+      const error = new Error("KEY_ERROR");
+      error.statusCode = 400;
+      throw error;
+    }
+    
+    const order = await orderService.getAllOrders(userId);
+    return res.status(200).json({ data: order });
+  } catch (error) {
+    res.status(error.statusCode).json({ message: error.message });
+  }
+}
+
+module.exports = { getOrderItems, getAllOrders };

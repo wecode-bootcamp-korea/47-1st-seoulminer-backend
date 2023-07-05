@@ -10,4 +10,14 @@ const getOrderItems = async (userId, orderNumber) => {
   }
 }
 
-module.exports = { getOrderItems };
+const getAllOrders = async (userId) => {
+  try {
+    return await orderDao.allOrders(userId)
+  } catch {
+    error = new Error('FAILED_TO_GET_ORDERS')
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
+module.exports = { getOrderItems, getAllOrders };

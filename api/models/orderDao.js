@@ -29,6 +29,25 @@ const orderItems = async (userId, orderNumber) => {
   }
 }
 
+const allOrders = async (userId) => {
+  try {
+    return await appDataSource.query(
+      `SELECT DISTINCT
+        order_number,
+        total_price,
+        status_id
+      FROM orders
+      JOIN statuses ON statuses.id = orders.status_id
+      WHERE orders.user_id = ?`,
+      [userId]
+    )
+  } catch {
+    const error = new Error("dataSource Error");
+    error.statusCode = 400;
+    throw error;
+  }
+}
 module.exports = {
-  orderItems
+  orderItems,
+  allOrders
 };
