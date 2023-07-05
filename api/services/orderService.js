@@ -1,11 +1,15 @@
 const { orderDao } = require("../models");
 
-const createUserOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity) => {
-  return await orderDao.createOrderByItem(userId, orderNumber, productId, productOptionId, quantity);
+const createUserOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) => {
+  const userPoint = await orderDao.getUserPointById(userId);
+
+  if (userPoint.points < totalPrice) {
+    const error = new Error("NOT_ENOUGH_MONEY");
+    error.statusCode = 403;
+
+    throw error;
+  }
+  return await orderDao.createOrderByCart(userId, orderNumber, totalPrice, orderStatus);
 };
 
-const createUserOrderByCart = async (userId, orderNumber, totalPrice) => {
-  return await orderDao.createOrderByCart(userId, orderNumber, totalPrice);
-};
-
-module.exports = { createUserOrderByItem, createUserOrderByCart };
+module.exports = { createUserOrderByCart };
