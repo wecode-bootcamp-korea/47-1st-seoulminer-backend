@@ -5,7 +5,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
   try {
     const product = await cartDao.checkInventory(productId, productOptionId);
 
-    if (!(product)) {
+    if (!product) {
       const error = new Error("INVALID_PRODUCT");
       error.statusCode = 409;
       throw error;
@@ -13,7 +13,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
 
     if (product.inventory === 0) {
       const error = new Error("PRODUCT_OUT_OF_STOCK");
-      error.statusCode = 400;
+      error.statusCode = 409;
       throw error;
     }
 
