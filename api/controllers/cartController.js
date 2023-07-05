@@ -12,8 +12,10 @@ const createCartItem = async (req, res) => {
     }
 
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
-    res.status(200).json({ message: "Product Added to Cart" });
+    return res.status(200).json({ message: "CART_ADD_SUCCESS" });
   } catch (error) {
+    //why doesn't it get the error from service and dao?
+    console.log(error)
     return res.status(error.statusCode).json({ message: error.message });
   }
 };
@@ -43,7 +45,7 @@ const updateCartItem = async (req, res) => {
     }
 
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
-    res.status(200).json({ message: "Product Added to Cart" });
+    return res.status(200).json({ message: "CART_UPDATE_SUCCESS" });
   } catch (error) {
     return res.status(error.statusCode).json({ message: error.message });
   }
@@ -54,7 +56,7 @@ const cartProductDeleteByCartId = async (req, res) => {
     const { cartId } = req.params;
 
     await cartService.cartProductDeleteByCartId(cartId);
-    return await res.status(204).json({ message: "ITEM_DELETE_SUCCESS" });
+    return res.status(204).json({ message: "ITEM_DELETE_SUCCESS" });
   } catch (error) {
     console.log(error);
     return res.status(error.statusCode).json({ message: error.meesage });
@@ -72,7 +74,7 @@ const deleteAllCart = async (req, res) => {
     }
     
     await cartService.deleteAllCart(userId);
-    res.status(200).json({message: "Cart Deleted"});
+    return res.status(204).json({message: "ALL_CART_DELETE_SUCCESS"});
   } catch (error) {
     return res.status(error.statusCode).json({ message: error.message });
   }

@@ -1,14 +1,20 @@
 const { appDataSource } = require("./dataSource");
 
 const cartProductDeleteByCartId = async (cartId) => {
-  return await appDataSource.query(
-    `
-    DELETE
-    FROM carts
-    WHERE id = ?;
-  `,
-    [cartId]
-  );
+  try {
+    return await appDataSource.query(
+      `
+      DELETE
+      FROM carts
+      WHERE id = ?;
+    `,
+      [cartId]
+    );
+  } catch {
+    const error = new Error("INVALID_DATA_INPUT");
+    error.statusCode = 400;
+    throw error;
+  }
 };
 
 const checkInventory = async (productId, productOptionId) => {
@@ -25,7 +31,7 @@ const checkInventory = async (productId, productOptionId) => {
       [productOptionId, productId]
     );
     return product;
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -46,7 +52,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
       `,
       [userId, productId, productOptionId, quantity, quantity]
     );
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -58,6 +64,7 @@ const getCartItem = async (userId, productId, productOptionId) => {
     const [item] = await appDataSource.query(
       `
       SELECT 
+        carts.id AS cartId,
         user_id as userId, 
         product_id as productId, 
         product_option_id as productOptionId, 
@@ -71,7 +78,7 @@ const getCartItem = async (userId, productId, productOptionId) => {
       [userId, productId, productOptionId]
     );
     return item;
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -79,33 +86,39 @@ const getCartItem = async (userId, productId, productOptionId) => {
 };
 
 const getCartList = async (userId) => {
-  return await appDataSource.query(
-    `
-    SELECT 
-      carts.id AS cartId,
-      products.name AS productName,
-      product_options.name AS productOptionName,
-      carts.quantity AS quantity,
-      products.price AS price
-    FROM carts
-    JOIN products ON carts.product_id = products.id
-    JOIN product_options ON carts.product_option_id = product_options.id
-    WHERE carts.user_id = ?;
-  `,
-    [userId]
-  );
+  try {
+    return await appDataSource.query(
+      `
+        SELECT 
+          carts.id AS cartId,
+          products.name AS productName,
+          product_options.name AS productOptionName,
+          carts.quantity AS quantity,
+          products.price AS price
+        FROM carts
+        JOIN products ON carts.product_id = products.id
+        JOIN product_options ON carts.product_option_id = product_options.id
+        WHERE carts.user_id = ?;
+      `,
+      [userId]
+    );
+  } catch {
+    const error = new Error("INVALID_DATA_INPUT");
+    error.statusCode = 400;
+    throw error;
+  }
 };
 
 const deleteAllCart = async (userId) => {
   try {
     await appDataSource.query(
       `
-      DELETE from carts
-        where user_id = ?
-      `,
+    DELETE from carts
+      where user_id = ?
+    `,
       [userId]
     );
-  } catch (err) {
+  } catch {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 400;
     throw error;
@@ -118,5 +131,6 @@ module.exports = {
   getCartItem,
   checkInventory,
   deleteAllCart,
+  cartProductDeleteByCartId,
   getCartList,
 };
