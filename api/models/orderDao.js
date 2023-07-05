@@ -33,9 +33,9 @@ const allOrders = async (userId) => {
   try {
     return await appDataSource.query(
       `SELECT DISTINCT
-        order_number,
-        total_price,
-        status_id
+        order_number as orderNumber,
+        total_price as totalPrice,
+        status_id as statusId
       FROM orders
       JOIN statuses ON statuses.id = orders.status_id
       WHERE orders.user_id = ?`,
