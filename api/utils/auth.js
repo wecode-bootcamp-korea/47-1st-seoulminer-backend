@@ -3,7 +3,7 @@ const { userDao } = require("../models");
 
 const loginRequired = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split("Bearer ")[1];
+    const token = req.headers.authorization;
 
     if (!token) {
       return res.status(401).json({ message: "TOKEN_NOT_FOUND" });
@@ -12,7 +12,7 @@ const loginRequired = async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await userDao.getUserById(decodedToken.id);
-    
+
     if (!user) {
       return res.status(404).json({ message: "USER_NOT_FOUND" });
     }
