@@ -14,6 +14,8 @@ const createCartItem = async (req, res) => {
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
     return res.status(200).json({ message: "CART_ADD_SUCCESS" });
   } catch (error) {
+    //why doesn't it get the error from service and dao?
+    console.log(error)
     return res.status(error.statusCode).json({ message: error.message });
   }
 };
