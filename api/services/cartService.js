@@ -1,12 +1,19 @@
 const { cartDao } = require("../models");
+const { productDao } = require("../models");
 
 const createCartItem = async (userId, productId, productOptionId, quantity) => {
   try {
     const product = await cartDao.checkInventory(productId, productOptionId);
 
+    if (!product) {
+      const error = new Error("INVALID_PRODUCT");
+      error.statusCode = 409;
+      throw error;
+    }
+
     if (product.inventory === 0) {
       const error = new Error("PRODUCT_OUT_OF_STOCK");
-      error.statusCode = 400;
+      error.statusCode = 409;
       throw error;
     }
 
@@ -27,9 +34,7 @@ const createCartItem = async (userId, productId, productOptionId, quantity) => {
     }
 
     await cartDao.createCartItem(userId, productId, productOptionId, quantity);
-  } catch {
-    const error = new Error("FAILED_TO_UPDATE_CART");
-    error.statusCode = 400;
+  } catch (error) {
     throw error;
   }
 };
@@ -67,21 +72,13 @@ const updateCartItem = async (userId, productId, productOptionId, quantity) => {
     }
 
     await cartDao.createCartItem(userId, productId, productOptionId, quantity);
-  } catch {
-    const error = new Error("FAILED_TO_UPDATE_CART");
-    error.statusCode = 400;
+  } catch (error) {
     throw error;
   }
 };
 
 const deleteAllCart = async (userId) => {
-  try {
-    await cartDao.deleteAllCart(userId)
-  } catch {
-    const error = new Error("FAILED_TO_DELETE_CART")
-    error.statusCode = 400;
-    throw error;
-  }
+  return await cartDao.deleteAllCart(userId)
 };
 
 module.exports = {
