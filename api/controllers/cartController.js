@@ -27,7 +27,7 @@ const getCartList = async (req, res) => {
     return res.status(200).json({ data: getCartList });
   } catch (error) {
     console.log(error);
-    return res.status(401).json({ message: "INVALID_TOKEN" });
+    return res.status(error.statusCode).json({ message: error.message });
   }
 };
 
