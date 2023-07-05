@@ -1,3 +1,7 @@
 const { orderDao } = require("../models");
 
-module.exports = { getOrder };
+const getOrderItems = async (userId, orderNumber) => {
+  return await orderDao.orderItems(userId, orderNumber)
+}
+
+module.exports = { getOrderItems };
