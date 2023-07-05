@@ -14,8 +14,6 @@ const createCartItem = async (req, res) => {
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
     return res.status(200).json({ message: "CART_ADD_SUCCESS" });
   } catch (error) {
-    //why doesn't it get the error from service and dao?
-    console.log(error)
     return res.status(error.statusCode).json({ message: error.message });
   }
 };
@@ -28,7 +26,7 @@ const getCartList = async (req, res) => {
 
     return res.status(200).json({ data: getCartList });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return res.status(401).json({ message: "INVALID_TOKEN" });
   }
 };
@@ -47,6 +45,7 @@ const updateCartItem = async (req, res) => {
     await cartService.createCartItem(userId, productId, productOptionId, quantity);
     return res.status(200).json({ message: "CART_UPDATE_SUCCESS" });
   } catch (error) {
+    console.log(error);
     return res.status(error.statusCode).json({ message: error.message });
   }
 };
@@ -76,6 +75,7 @@ const deleteAllCart = async (req, res) => {
     await cartService.deleteAllCart(userId);
     return res.status(204).json({message: "ALL_CART_DELETE_SUCCESS"});
   } catch (error) {
+    console.log(error);
     return res.status(error.statusCode).json({ message: error.message });
   }
 };
