@@ -5,11 +5,14 @@ const { userDao } = require("../models");
 const signUp = async (email, password, name, phoneNumber) => {
   const saltRounds = 12;
 
-  const emailRegEx = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-  const passwordRegEx = /^(?=.*[a-z])(?=.*[!@#$%^&*()-=_+])[a-zA-Z\d!@#$%^&*()-=_+]{10,16}$/;
+  const emailRegEx =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const passwordRegEx =
+    /^(?=.*[a-z])(?=.*[!@#$%^&*()-=_+])[a-zA-Z\d!@#$%^&*()-=_+]{10,16}$/;
 
   const emailExist = await userDao.userExistByEmail(email);
   const phoneNumberExist = await userDao.userExistByPhoneNumber(phoneNumber);
+  const defaultPoints = 10000000;
 
   if (!emailRegEx.test(email)) {
     const error = new Error("INVALID_EMAIL");
@@ -40,7 +43,13 @@ const signUp = async (email, password, name, phoneNumber) => {
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  return await userDao.createUser(email, hashedPassword, name, phoneNumber);
+  return await userDao.createUser(
+    email,
+    hashedPassword,
+    name,
+    phoneNumber,
+    defaultPoints
+  );
 };
 
 const signIn = async (email, password) => {

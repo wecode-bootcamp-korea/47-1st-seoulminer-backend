@@ -1,21 +1,29 @@
 const { appDataSource } = require("./dataSource");
 
-const createUser = async (email, hashedPassword, name, phoneNumber) => {
+const createUser = async (
+  email,
+  hashedPassword,
+  name,
+  phoneNumber,
+  defaultPoints
+) => {
   return await appDataSource.query(
     `
       INSERT INTO users(
         email,
         password,
         name,
-        phone_number
+        phone_number,
+        points
       ) VALUES (
+        ?,
         ?,
         ?,
         ?,
         ?
       );
       `,
-    [email, hashedPassword, name, phoneNumber]
+    [email, hashedPassword, name, phoneNumber, defaultPoints]
   );
 };
 
