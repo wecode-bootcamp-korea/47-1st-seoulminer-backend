@@ -3,13 +3,22 @@ const { appDataSource } = require("./dataSource");
 const orderItems = async (userId, orderNumber) => {
   try {
     return await appDataSource.query(
-      `SELECT order_number as orderNumber, 
-              product_id as productId, 
-              product_option_id as productOptionId, 
-              quantity
+      `SELECT 
+        orders.order_number as orderNumber,
+        orders.total_price as totalPrice,
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          'productId', product_id, 
+          'quantity', quantity,
+          'itemPrice', price,
+          'orderPrice', quantity*price
+          )
+        ) as orderItems
       FROM order_items
-      JOIN orders on orders.id = order_id
-      WHERE user_id = ? AND order_number = ?
+      JOIN orders on orders.id = order_items.order_id
+      JOIN products on products.id = product_id
+      WHERE orders.user_id = ? AND orders.order_number = ?
+      group by order_items.order_id
       `,
       [userId, orderNumber]
     )
