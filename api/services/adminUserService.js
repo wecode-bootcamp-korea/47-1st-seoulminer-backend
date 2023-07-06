@@ -50,12 +50,7 @@ const adminUserSignUp = async (
     error.statusCode = 400;
     throw error;
   }
-  // 중복검사 툴 수행
-  // if (accountNameExist.exist > 0) {
-  //   const error = new Error("ACCOUNT_NAME_EXIST");
-  //   error.statusCode = 409;
-  //   throw error;
-  // }
+
   if (accountNameExist) {
     const error = new Error("ACCOUNT_NAME_EXIST");
     error.statusCode = 409;
