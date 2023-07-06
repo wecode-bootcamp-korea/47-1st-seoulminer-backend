@@ -79,7 +79,7 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
 
   try {
     await queryRunner.startTransaction();
-    // userId로 장바구니 가져오기
+
     const getCartByUserId = await queryRunner.query(
       `
       SELECT 
@@ -91,18 +91,15 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
     `,
       [userId]
     );
-    // 주문서 생성 (orderStatus : beforePayment) (orders 테이블)
+
     const orderId = await createOrder(queryRunner, userId, orderNumber, totalPrice, orderStatus);
 
-    // 주문 품목 생성 (order_items 테이블)
     for (const item of getCartByUserId) {
       await createOrderItem(queryRunner, orderId, item.product_id, item.product_option_id, item.quantity);
     }
 
-    // 포인트 차감 기능
     await updatePoint(queryRunner, totalPrice, userId);
 
-    // 주문서 상태 변경 (orderStatus : afterPayment)
     await queryRunner.query(
       `
       UPDATE orders
@@ -111,7 +108,7 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
     `,
       [orderStatus.afterPayment, orderNumber]
     );
-    // 장바구니 품목 삭제
+
     await queryRunner.query(
       `
       DELETE
@@ -121,7 +118,11 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
       [userId]
     );
   } catch (error) {
+    console.log("오류 발생:", error.message);
+    console.log("스택 추적:", error.stack);
     await queryRunner.rollbackTransaction();
+  } finally {
+    await queryRunner.release();
   }
 };
 

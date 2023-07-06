@@ -18,6 +18,13 @@ const createUserOrderByCart = async (req, res) => {
       throw error;
     }
 
+    if (totalPrice === 0) {
+      const error = new Error("EMPTY_CART");
+      error.statusCode = 403;
+
+      throw error;
+    }
+
     await orderService.createUserOrderByCart(userId, orderNumber, totalPrice, orderStatus);
 
     res.status(201).json({ message: "CREATE_ORDER_SUCCESS" });

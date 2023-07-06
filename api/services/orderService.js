@@ -9,6 +9,7 @@ const createUserOrderByCart = async (userId, orderNumber, totalPrice, orderStatu
 
     throw error;
   }
+
   return await orderDao.createOrderByCart(userId, orderNumber, totalPrice, orderStatus);
 };
 
