@@ -18,42 +18,42 @@ const adminUserExistsByAccountName = async (accountName) => {
   const [adminUserExistsByAccountName] = await appDataSource.query(
     `
     SELECT EXISTS (
-      SELECT *
+      SELECT id
       FROM admin_users
       WHERE account_name = ?
     ) exist
   `,
     [accountName]
   );
-  return adminUserExistsByAccountName;
+  return !!parseInt(adminUserExistsByAccountName.exist);
 };
 
 const adminUserExistsByEmail = async (email) => {
   const [adminUserExistsByEmail] = await appDataSource.query(
     `
     SELECT EXISTS (
-      SELECT *
+      SELECT id
       FROM admin_users
       WHERE email = ?
     ) exist
     `,
     [email]
   );
-  return adminUserExistsByEmail;
+  return !!parseInt(adminUserExistsByEmail.exist);
 };
 
 const adminUserExistsByPhoneNumber = async (phoneNumber) => {
   const [adminUserExistsByPhoneNumber] = await appDataSource.query(
     `
     SELECT EXISTS (
-      SELECT *
+      SELECT id
       FROM admin_users
       WHERE phone_number = ?
     ) exist
     `,
     [phoneNumber]
   );
-  return adminUserExistsByPhoneNumber;
+  return !!parseInt(adminUserExistsByPhoneNumber.exist);
 };
 
 const createAdminUser = async (
