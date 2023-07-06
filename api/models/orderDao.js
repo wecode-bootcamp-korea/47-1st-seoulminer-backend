@@ -41,8 +41,21 @@ const getUserPointById = async (userId) => {
   return userPoint;
 };
 
+const getProductPrice = async (productId) => {
+  const [getProductInfoByProductId] = await appDataSource.query(
+    `
+      SELECT price
+      FROM products
+      WHERE id = ?
+  `,
+    [productId]
+  );
+
+  return getProductInfoByProductId.price;
+};
+
 const createOrder = async (queryRunner, userId, orderNumber, totalPrice, orderStatus) => {
-  const createOrder = await queryRunner.query(
+  await queryRunner.query(
     `
     INSERT INTO orders(
       user_id,
@@ -59,7 +72,17 @@ const createOrder = async (queryRunner, userId, orderNumber, totalPrice, orderSt
     [userId, orderNumber, totalPrice, orderStatus.beforePayment]
   );
 
-  orderId = createOrder.insertId;
+  const getOrderId = await queryRunner.query(
+    `
+    SELECT id
+    FROM orders
+    WHERE order_number = ?
+  `,
+    [orderNumber]
+  );
+
+  const orderId = getOrderId[0].id;
+
   return orderId;
 };
 
@@ -91,6 +114,42 @@ const updatePoint = async (queryRunner, totalPrice, userId) => {
 `,
     [totalPrice, userId]
   );
+};
+
+const createOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity, orderStatus, itemPrice) => {
+  const queryRunner = await appDataSource.createQueryRunner();
+
+  try {
+    await queryRunner.startTransaction();
+
+    const orderId = await createOrder(queryRunner, userId, orderNumber, itemPrice, orderStatus);
+
+    await createOrderItem(queryRunner, orderId, productId, productOptionId, quantity);
+
+    await updatePoint(queryRunner, itemPrice, userId);
+
+    await queryRunner.query(
+      `
+      UPDATE orders
+      SET status_id = ?
+      WHERE order_number = ?
+    `,
+      [orderStatus.afterPayment, orderNumber]
+    );
+
+    await queryRunner.query(
+      `
+      DELETE
+      FROM carts
+      WHERE user_id = ?
+    `,
+      [userId]
+    );
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+  } finally {
+    await queryRunner.release();
+  }
 };
 
 const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) => {
@@ -144,4 +203,4 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
   }
 };
 
-module.exports = { orderItems, getUserPointById, createOrderByCart };
+module.exports = { orderItems, getUserPointById, getProductPrice, createOrderByCart, createOrderByItem };
