@@ -1,34 +1,5 @@
 const { appDataSource } = require("./dataSource");
 
-const orderItems = async (userId, orderNumber) => {
-  try {
-    return await appDataSource.query(
-      `SELECT 
-        orders.order_number as orderNumber,
-        orders.total_price as totalPrice,
-      JSON_ARRAYAGG(
-        JSON_OBJECT(
-          'productId', product_id, 
-          'quantity', quantity,
-          'itemPrice', price,
-          'orderPrice', quantity*price
-          )
-        ) as orderItems
-      FROM order_items
-      JOIN orders on orders.id = order_items.order_id
-      JOIN products on products.id = product_id
-      WHERE orders.user_id = ? AND orders.order_number = ?
-      group by order_items.order_id
-      `,
-      [userId, orderNumber]
-    );
-  } catch {
-    const error = new Error("dataSource Error");
-    error.statusCode = 400;
-    throw error;
-  }
-};
-
 const getUserPointById = async (userId) => {
   const [userPoint] = await appDataSource.query(
     `
@@ -42,7 +13,7 @@ const getUserPointById = async (userId) => {
 };
 
 const createOrder = async (queryRunner, userId, orderNumber, totalPrice, orderStatus) => {
-  const createOrder = await queryRunner.query(
+  await queryRunner.query(
     `
     INSERT INTO orders(
       user_id,
@@ -59,7 +30,17 @@ const createOrder = async (queryRunner, userId, orderNumber, totalPrice, orderSt
     [userId, orderNumber, totalPrice, orderStatus.beforePayment]
   );
 
-  orderId = createOrder.insertId;
+  const getOrderId = await queryRunner.query(
+    `
+    SELECT id
+    FROM orders
+    WHERE order_number = ?
+  `,
+    [orderNumber]
+  );
+
+  const orderId = getOrderId[0].id;
+
   return orderId;
 };
 
@@ -137,11 +118,12 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
       [userId]
     );
   } catch (error) {
+    console.log("오류 발생:", error.message);
+    console.log("스택 추적:", error.stack);
     await queryRunner.rollbackTransaction();
-    throw error;
   } finally {
     await queryRunner.release();
   }
 };
 
-module.exports = { orderItems, getUserPointById, createOrderByCart };
+module.exports = { getUserPointById, createOrderByCart };

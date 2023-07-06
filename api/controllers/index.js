@@ -7,5 +7,5 @@ module.exports = {
   userController,
   productController,
   cartController,
-  orderController
+  orderController,
 };
