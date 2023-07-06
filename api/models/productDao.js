@@ -60,7 +60,7 @@ const getProductByProductId = async (productId) => {
         'optionName', product_options.name,
         'optionDescription', product_options.description,
         'optionInventory', product_options.inventory
-       )
+        )
       ) AS productOptions
       FROM products
       INNER JOIN product_options ON products.id = product_options.product_id
