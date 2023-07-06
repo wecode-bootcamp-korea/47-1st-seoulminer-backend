@@ -10,6 +10,19 @@ const getOrderItems = async (userId, orderNumber) => {
   }
 };
 
+const createUserOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) => {
+  const userPoint = await orderDao.getUserPointById(userId);
+
+  if (userPoint.points < totalPrice) {
+    const error = new Error("NOT_ENOUGH_MONEY");
+    error.statusCode = 403;
+
+    throw error;
+  }
+
+  return await orderDao.createOrderByCart(userId, orderNumber, totalPrice, orderStatus);
+};
+
 const createUserOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity, orderStatus) => {
   const userPoint = await orderDao.getUserPointById(userId);
   const itemPrice = await orderDao.getProductPrice(productId);
@@ -23,4 +36,4 @@ const createUserOrderByItem = async (userId, orderNumber, productId, productOpti
   return await orderDao.createOrderByItem(userId, orderNumber, productId, productOptionId, quantity, orderStatus, itemPrice);
 };
 
-module.exports = { getOrderItems, createUserOrderByItem };
+module.exports = { createUserOrderByCart, getOrderItems, createUserOrderByItem };

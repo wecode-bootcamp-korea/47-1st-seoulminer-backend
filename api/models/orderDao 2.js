@@ -1,34 +1,5 @@
 const { appDataSource } = require("./dataSource");
 
-const orderItems = async (userId, orderNumber) => {
-  try {
-    return await appDataSource.query(
-      `SELECT 
-        orders.order_number as orderNumber,
-        orders.total_price as totalPrice,
-      JSON_ARRAYAGG(
-        JSON_OBJECT(
-          'productId', product_id, 
-          'quantity', quantity,
-          'itemPrice', price,
-          'orderPrice', quantity*price
-          )
-        ) as orderItems
-      FROM order_items
-      JOIN orders on orders.id = order_items.order_id
-      JOIN products on products.id = product_id
-      WHERE orders.user_id = ? AND orders.order_number = ?
-      group by order_items.order_id
-      `,
-      [userId, orderNumber]
-    );
-  } catch {
-    const error = new Error("dataSource Error");
-    error.statusCode = 400;
-    throw error;
-  }
-};
-
 const getUserPointById = async (userId) => {
   const [userPoint] = await appDataSource.query(
     `
@@ -39,19 +10,6 @@ const getUserPointById = async (userId) => {
     [userId]
   );
   return userPoint;
-};
-
-const getProductPrice = async (productId) => {
-  const [getProductInfoByProductId] = await appDataSource.query(
-    `
-      SELECT price
-      FROM products
-      WHERE id = ?
-  `,
-    [productId]
-  );
-
-  return getProductInfoByProductId.price;
 };
 
 const createOrder = async (queryRunner, userId, orderNumber, totalPrice, orderStatus) => {
@@ -116,42 +74,6 @@ const updatePoint = async (queryRunner, totalPrice, userId) => {
   );
 };
 
-const createOrderByItem = async (userId, orderNumber, productId, productOptionId, quantity, orderStatus, itemPrice) => {
-  const queryRunner = await appDataSource.createQueryRunner();
-
-  try {
-    await queryRunner.startTransaction();
-
-    const orderId = await createOrder(queryRunner, userId, orderNumber, itemPrice, orderStatus);
-
-    await createOrderItem(queryRunner, orderId, productId, productOptionId, quantity);
-
-    await updatePoint(queryRunner, itemPrice, userId);
-
-    await queryRunner.query(
-      `
-      UPDATE orders
-      SET status_id = ?
-      WHERE order_number = ?
-    `,
-      [orderStatus.afterPayment, orderNumber]
-    );
-
-    await queryRunner.query(
-      `
-      DELETE
-      FROM carts
-      WHERE user_id = ?
-    `,
-      [userId]
-    );
-  } catch (error) {
-    await queryRunner.rollbackTransaction();
-  } finally {
-    await queryRunner.release();
-  }
-};
-
 const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) => {
   const queryRunner = await appDataSource.createQueryRunner();
 
@@ -196,11 +118,12 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
       [userId]
     );
   } catch (error) {
+    console.log("오류 발생:", error.message);
+    console.log("스택 추적:", error.stack);
     await queryRunner.rollbackTransaction();
-    throw error;
   } finally {
     await queryRunner.release();
   }
 };
 
-module.exports = { orderItems, getUserPointById, getProductPrice, createOrderByCart, createOrderByItem };
+module.exports = { getUserPointById, createOrderByCart };
