@@ -118,8 +118,6 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
       [userId]
     );
   } catch (error) {
-    console.log("오류 발생:", error.message);
-    console.log("스택 추적:", error.stack);
     await queryRunner.rollbackTransaction();
   } finally {
     await queryRunner.release();
