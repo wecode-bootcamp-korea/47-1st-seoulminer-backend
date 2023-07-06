@@ -1,5 +1,4 @@
 const { cartDao } = require("../models");
-const { productDao } = require("../models");
 
 const createCartItem = async (userId, productId, productOptionId, quantity) => {
   try {

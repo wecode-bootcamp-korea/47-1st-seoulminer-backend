@@ -4,7 +4,7 @@ const router = express.Router();
 const userRouter = require("./userRouter");
 const productRouter = require("./productRouter");
 const cartRouter = require("./cartRouter");
-const orderRouter = require("./orderRoute");
+const orderRouter = require("./orderRouter");
 
 router.use("/users", userRouter);
 router.use("/products", productRouter);
