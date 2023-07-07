@@ -40,7 +40,7 @@ const createUserOrderByCart = async (req, res) => {
 
     res.status(201).json({ message: "CREATE_ORDER_SUCCESS" });
   } catch (error) {
-    res.status(error.statusCode).json({ message: error.message });
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 

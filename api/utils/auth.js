@@ -18,8 +18,8 @@ const loginRequired = async (req, res, next) => {
     }
     req.user = user[0];
     next();
-  } catch {
-    return res.status(401).json({ message: "INVALID_TOKEN" });
+  } catch (error) {
+    return res.status(error.statusCode).json({ message: error.message });
   }
 };
 
