@@ -10,6 +10,16 @@ const getOrderItems = async (userId, orderNumber) => {
   }
 };
 
+const getAllOrders = async (userId) => {
+  try {
+    return await orderDao.allOrders(userId)
+  } catch {
+    error = new Error('FAILED_TO_GET_ORDERS')
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
 const createUserOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) => {
   const userPoint = await orderDao.getUserPointById(userId);
 
@@ -36,4 +46,4 @@ const createUserOrderByItem = async (userId, orderNumber, productId, productOpti
   return await orderDao.createOrderByItem(userId, orderNumber, productId, productOptionId, quantity, orderStatus, itemPrice);
 };
 
-module.exports = { createUserOrderByCart, getOrderItems, createUserOrderByItem };
+module.exports = { createUserOrderByCart, getAllOrders, getOrderItems, createUserOrderByItem };

@@ -203,4 +203,23 @@ const createOrderByCart = async (userId, orderNumber, totalPrice, orderStatus) =
   }
 };
 
-module.exports = { orderItems, getUserPointById, getProductPrice, createOrderByCart, createOrderByItem };
+const allOrders = async (userId) => {
+  try {
+    return await appDataSource.query(
+      `SELECT DISTINCT
+        order_number as orderNumber,
+        total_price as totalPrice,
+        status_id as statusId
+      FROM orders
+      JOIN statuses ON statuses.id = orders.status_id
+      WHERE orders.user_id = ?`,
+      [userId]
+    )
+  } catch {
+    const error = new Error("dataSource Error");
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
+module.exports = { orderItems, allOrders, getUserPointById, getProductPrice, createOrderByCart, createOrderByItem };
