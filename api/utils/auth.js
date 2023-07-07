@@ -19,7 +19,7 @@ const loginRequired = async (req, res, next) => {
     req.user = user[0];
     next();
   } catch (error) {
-    return res.status(error.statusCode).json({ message: error.message });
+    return res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
