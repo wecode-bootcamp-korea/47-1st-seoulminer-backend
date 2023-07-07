@@ -92,7 +92,7 @@ const getCartList = async (userId) => {
         SELECT 
           carts.id AS cartId,
           products.name AS productName,
-          product_options.name AS productOptionName,
+          product_options.id AS productOptionId,
           carts.quantity AS quantity,
           products.price AS price
         FROM carts
