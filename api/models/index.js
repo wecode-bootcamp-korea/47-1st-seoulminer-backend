@@ -3,6 +3,7 @@ const userDao = require("./userDao");
 const productDao = require("./productDao");
 const cartDao = require("./cartDao");
 const orderDao = require("./orderDao");
+const adminUserDao = require("./adminUserDao");
 
 module.exports = {
   dataSource,
@@ -10,4 +11,5 @@ module.exports = {
   productDao,
   cartDao,
   orderDao,
+  adminUserDao,
 };

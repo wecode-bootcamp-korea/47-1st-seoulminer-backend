@@ -1,11 +1,19 @@
 const { appDataSource } = require("./dataSource");
 const queryBuilder = require("./queryBuilder");
 
-const getProductList = async (categoryIds, sorting, parsedLimit, parsedOffset) => {
+const getProductList = async (
+  categoryIds,
+  sorting,
+  parsedLimit,
+  parsedOffset
+) => {
   try {
     const filterQuery = queryBuilder.filterBuilder(categoryIds);
     const orderQuery = queryBuilder.sortingBuilder(sorting);
-    const paginationQuery = queryBuilder.paginationBuilder(parsedLimit, parsedOffset);
+    const paginationQuery = queryBuilder.paginationBuilder(
+      parsedLimit,
+      parsedOffset
+    );
     const productList = await appDataSource.query(
       `
       SELECT
